@@ -1,0 +1,5 @@
+profile: service
+defaultPackage: rest.scheduler
+---
+testFramework: spek
+sourceLanguage: kotlin

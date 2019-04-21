@@ -1,0 +1,4 @@
+micronaut:
+  application:
+    name: rest-scheduler
+  server.port: 8081
