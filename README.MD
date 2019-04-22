@@ -6,10 +6,14 @@ An implementation of basic query API for retrieving data of a public transportat
 
 * Kotlin
 * Gradle
-* Micronaut Framework
+* Micronaut Framework ![https://micronaut.io/]
 * JUnit
 * Docker
 * Postman
+
+#### External dependencies
+* Commons-codec
+* Hamcrest
 
 ### Concepts
 
@@ -52,15 +56,15 @@ Call
 ## Docker
 * build with 'docker build .' and notice the container id in the console output:
 ```Successfully built 2a54babf60c4```
-* run with  `docker run -p8081:8081 2a54babf60c4` whereas lat parameter it the image name
+* run with  `docker run -p8081:8081 2a54babf60c4` whereas last parameter it the image name
 
 ## Postman
 
-
-![Postman Example](https://github.com/seredkin/scheduler/blob/master/postman-screenshot.png)
 Use postman script to test running container by importing this file to Postman: 
 
-![scheduler.postman_collection.json]
+Postman Example: ![https://github.com/seredkin/scheduler/blob/master/postman-screenshot.png]
+
+Postman collection: ![https://github.com/seredkin/scheduler/blob/master/scheduler.postman_collection.json]
 
 Add your own Postman requests
 
@@ -71,7 +75,7 @@ Open build.gradle in our IDE of choice, set up annotation processing for Microna
  
 ![https://guides.micronaut.io/creating-your-first-micronaut-app-kotlin/guide/index.html]
 
-By runing all test with coverage, you should get ˜90% line coverage (approximation is given to current inability of IDEA to evaluet Kotlin coverage properly):
+By running all test with coverage, you should get ˜90% line coverage (approximation is given to current inability of IDEA to evaluate Kotlin coverage properly):
 
-![Coverage sample from IDEA](https://github.com/seredkin/scheduler/blob/master/coverage-screenshot.png) 
+Coverage example: ![https://github.com/seredkin/scheduler/blob/master/coverage-screenshot.png] 
       
