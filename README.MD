@@ -62,9 +62,9 @@ Call
 
 Use postman script to test running container by importing this file to Postman: 
 
-Postman Example: ![https://github.com/seredkin/scheduler/blob/master/postman-screenshot.png]
+Postman Example: [https://github.com/seredkin/scheduler/blob/master/postman-screenshot.png]
 
-Postman collection: ![https://github.com/seredkin/scheduler/blob/master/scheduler.postman_collection.json]
+Postman collection: [https://github.com/seredkin/scheduler/blob/master/scheduler.postman_collection.json]
 
 Add your own Postman requests
 
@@ -73,9 +73,9 @@ Add your own Postman requests
 
 Open build.gradle in our IDE of choice, set up annotation processing for Micronaut:
  
-![https://guides.micronaut.io/creating-your-first-micronaut-app-kotlin/guide/index.html]
+[https://guides.micronaut.io/creating-your-first-micronaut-app-kotlin/guide/index.html]
 
 By running all test with coverage, you should get ˜90% line coverage (approximation is given to current inability of IDEA to evaluate Kotlin coverage properly):
 
-Coverage example: ![https://github.com/seredkin/scheduler/blob/master/coverage-screenshot.png] 
+Coverage example: [https://github.com/seredkin/scheduler/blob/master/coverage-screenshot.png] 
       
