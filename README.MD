@@ -69,9 +69,9 @@ Add your own Postman requests
 
 Open build.gradle in our IDE of choice, set up annotation processing for Micronaut:
  
-[https://guides.micronaut.io/creating-your-first-micronaut-app-kotlin/guide/index.html]
+![https://guides.micronaut.io/creating-your-first-micronaut-app-kotlin/guide/index.html]
 
 By runing all test with coverage, you should get ˜90% line coverage (approximation is given to current inability of IDEA to evaluet Kotlin coverage properly):
 
-![Coverage sample from IDEA](coverage-screenshot.png) 
+![Coverage sample from IDEA](https://github.com/seredkin/scheduler/blob/master/coverage-screenshot.png) 
       
