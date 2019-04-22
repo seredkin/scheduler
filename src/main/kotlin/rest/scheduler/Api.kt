@@ -10,7 +10,6 @@ data class ArrivalTime(val lineId: Long, val stopId: Long, val time: LocalTime)
 data class Delay(val lineName: String, val delay: Int)
 data class ExpectedDelay(val lineName: String, val delaySeconds: Int, val reportedAt: ZonedDateTime)
 data class CityScheduleResponse(
-        val cityName: String = "Verspaetung", val validAt: ZonedDateTime = ZonedDateTime.now(),
         val lines: Collection<Line>, val stops: Collection<Stop>,
         val delays: Collection<ExpectedDelay>,
         val cityTimetable: Map<LocalTime, List<ArrivalTime>>,

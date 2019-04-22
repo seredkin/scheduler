@@ -1,16 +1,17 @@
 package rest.scheduler
 
 
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.lessThanOrEqualTo
+import org.hamcrest.number.OrderingComparison.greaterThanOrEqualTo
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 object ApiControllerTest {
 
     @Test
-    fun testReferenceDataSetOk() = main(arrayOf("debug"))
-
-    @JvmStatic
-    fun main(args: Array<String>) {
+    fun testReferenceDataSetOk() {
         val ctx = TestContext()
         val confService = ctx.configService
         val schedulerService = ctx.schedulerService
@@ -23,11 +24,6 @@ object ApiControllerTest {
         //There are 15 stops in total and 2 transit stations, 2 lines and 3 lines crossing
         assertEquals(13, confService.timeRepository.fetchAllTimes().size)
         assertEquals(3, confService.delayRepository.fetchAll().size)
-
-        if (args.contains("debug")) {
-            println(" --- Reference DataSet Loaded --- ")
-            println(apiController.citySchedule().getBody(CityScheduleResponse::class.java).get())
-        }
 
         //each request returns 0 or 1 expected delays if the line is known
         schedulerService.lineRepository.fetchAll().forEach {
@@ -51,12 +47,12 @@ object ApiControllerTest {
             }
         }
 
-        //Find a closing service for each line
-        schedulerService.timeRepository.fetchAllTimes().forEach { pair ->
-            pair.value.forEach { time ->
-                val stopArrivals = apiController.stopSchedule(time.stopId, pair.key.toString()).body()!!.arrivalTimes
-                assert(!stopArrivals.first.isBefore(pair.key))//equals or after
-            }
+        //Ensure closing service timing
+        val stopIndex = schedulerService.timeRepository.fetchAllStops()
+        val latestStopTimes = stopIndex.map { it.value.last()}
+        latestStopTimes.forEach {
+            val latestArrival = apiController.stopSchedule(it.stopId, it.time.toString()).body()!!.arrivalTimes.second
+            assertThat(latestArrival.last().time, lessThanOrEqualTo(schedulerService.fetchLatestTime()))
         }
 
         //At 09:59am all lines are on duty

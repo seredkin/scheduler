@@ -2,14 +2,12 @@ package rest.scheduler
 
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpResponse.ok
-import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.PathVariable
 import java.time.LocalTime
-import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Optional
 
 @Controller
 class ApiController(private val scheduleService: ScheduleService) {
@@ -27,15 +25,18 @@ class ApiController(private val scheduleService: ScheduleService) {
 
     // Return the vehicle arriving next at a given stop
     @Get("/next/{stopId}/{localTime}")
-    fun stopSchedule(@PathVariable stopId: Long, @PathVariable localTime: String? = null): HttpResponse<StopScheduleResponse> = ok(
-            StopScheduleResponse(
-                    stopId = stopId,
-                    localTime = Optional.ofNullable(localTime)
-                            .map { LocalTime.parse(localTime, DateTimeFormatter.ISO_LOCAL_TIME) }
-                            .orElse(LocalTime.now()),
-                    arrivalTimes = scheduleService.arrivingVehicles(stopId)
-            )
-    )
+    fun stopSchedule(@PathVariable stopId: Long, @PathVariable localTime: String? = null): HttpResponse<StopScheduleResponse> {
+        val atTime = Optional.ofNullable(localTime)
+                .map { LocalTime.parse(it, DateTimeFormatter.ISO_LOCAL_TIME) }
+                .orElse(LocalTime.now())
+        return ok(
+                StopScheduleResponse(
+                        stopId = stopId,
+                        localTime = atTime,
+                        arrivalTimes = scheduleService.arrivingVehicles(stopId, atTime)
+                )
+        )
+    }
 
     @Get("/schedule")
     fun citySchedule(): HttpResponse<CityScheduleResponse> =

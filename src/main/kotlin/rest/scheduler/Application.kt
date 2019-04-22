@@ -2,11 +2,13 @@ package rest.scheduler
 
 import io.micronaut.http.multipart.CompletedFileUpload
 import io.micronaut.runtime.Micronaut
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.ZonedDateTime.now
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Optional
 import java.util.concurrent.ConcurrentSkipListMap
 import javax.inject.Singleton
 import kotlin.text.Charsets.UTF_8
@@ -14,14 +16,28 @@ import kotlin.text.Charsets.UTF_8
 object Application {
 
     @JvmStatic
-    fun main(args: Array<String>) = Micronaut.build().packages("rest.scheduler").mainClass(Application.javaClass).start()
+    fun main(args: Array<String>) {
+        val context = Micronaut.build().packages("rest.scheduler").mainClass(Application.javaClass).start()
+        val log: Logger = LoggerFactory.getLogger(Application::class.java)
+        log.info("Rest Scheduler application started on port ${context.environment.getProperty("micronaut.server.port", String::class.java).get()}")
+        log.info("Call http://localhost:8081/config/default to load default configuration")
+        log.info("Call http://localhost:8081/config/clear to clear configuration")
+        log.info("Call http://localhost:8081/schedule to output the city timetable")
+
+    }
+
 
 }
 
+/*Extension functions used in the runtime */
+
+/** Converts basic Delay data class into ExpectedDelay with additional metadata */
 fun Delay.toExpectedDelay(receivedAt: ZonedDateTime = now()) = ExpectedDelay(lineName, delay.times(60), receivedAt)
 
+/** Reads Multipart file upload as text */
 fun CompletedFileUpload.asText() = this.inputStream.bufferedReader(UTF_8).use { it.readText() }
 
+/** Converts Times data class into ArrivalTime */
 fun Times.toScheduledTime() = ArrivalTime(lineId, stopId, LocalTime.parse(time, DateTimeFormatter.ISO_LOCAL_TIME))
 
 
@@ -29,9 +45,7 @@ fun Times.toScheduledTime() = ArrivalTime(lineId, stopId, LocalTime.parse(time, 
 class LineRepository {
     private val data = ConcurrentSkipListMap<Long, Line>()
     fun clear() = data.clear()
-
     fun addAll(allLines: Collection<Line>) = data.putAll(allLines.map { Pair(it.id, it) })
-
     fun fetchAll() = data.toMap().values
     fun findById(lineId: Long) = Optional.ofNullable(data[lineId])
 }
@@ -50,9 +64,8 @@ class StopRepository {
     }
 
     fun fetchAll() = data.toMap().values
-    fun findBySpatial(x: Int, y: Int):Stop = Optional.ofNullable(spatialData["$x.$y"])
+    fun findBySpatial(x: Int, y: Int): Stop = Optional.ofNullable(spatialData["$x.$y"])
             .orElseGet { error("Stop not found in coordinates $x.$y") }
-
 }
 
 @Singleton
@@ -62,7 +75,7 @@ class ScheduledTimeRepository {
 
     fun clear() = timeIndex.clear()
 
-    fun addAll(allArrivalTimes: Collection<ArrivalTime>){
+    fun addAll(allArrivalTimes: Collection<ArrivalTime>) {
         allArrivalTimes.groupBy { it.time }.forEach {
             timeIndex.merge(it.key, it.value) { t, u -> t.plus(u).sortedBy { arrival -> arrival.time } }
         }

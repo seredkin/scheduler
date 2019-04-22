@@ -3,9 +3,11 @@ package rest.scheduler
 import java.time.LocalTime
 import java.time.LocalTime.now
 import java.time.ZonedDateTime
-import java.util.*
+import java.util.LinkedHashMap
 import java.util.concurrent.ConcurrentSkipListMap
+import javax.inject.Singleton
 
+@Singleton
 class ScheduleService(val lineRepository: LineRepository,
                       val stopRepository: StopRepository,
                       val timeRepository: ScheduledTimeRepository,
@@ -36,7 +38,7 @@ class ScheduleService(val lineRepository: LineRepository,
         return wrapScheduleAroundGivenTime(stop = stop, localTime = localTime, wrapOverMidnight = false)
     }
 
-    internal fun arrivingVehicles(stopId: Long): Pair<LocalTime, List<ArrivalTime>> {
-        return Pair(now(), timeRepository.findByStopId(stopId).filter { it.time.isAfter(now()) })
+    internal fun arrivingVehicles(stopId: Long, fromTime: LocalTime = now()): Pair<LocalTime, List<ArrivalTime>> {
+        return Pair(now(), timeRepository.findByStopId(stopId).filter { !it.time.isBefore(fromTime)  })
     }
 }

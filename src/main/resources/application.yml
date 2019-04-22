@@ -2,3 +2,9 @@ micronaut:
   application:
     name: rest-scheduler
   server.port: 8081
+jackson:
+  serialization:
+    writeDatesAsTimestamps: false
+  modules:
+    - javaTimeModule
+    - kotlinModule

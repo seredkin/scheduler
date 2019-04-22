@@ -1,12 +1,15 @@
 package rest.scheduler
 
-import io.micronaut.http.HttpResponse.*
+import io.micronaut.http.HttpResponse.badRequest
+import io.micronaut.http.HttpResponse.ok
 import io.micronaut.http.MediaType
 import io.micronaut.http.MutableHttpResponse
-import io.micronaut.http.annotation.*
+import io.micronaut.http.annotation.Body
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.PathVariable
+import io.micronaut.http.annotation.Post
 import io.micronaut.http.multipart.CompletedFileUpload
-import io.reactivex.Flowable
-import kotlin.streams.toList
 
 @Controller
 class ConfigController(private val configurationService: ConfigurationService) {
@@ -26,5 +29,8 @@ class ConfigController(private val configurationService: ConfigurationService) {
 
     @Get("/config/clear")
     fun clearData() = configurationService.clearAll()
+
+    @Get("/config/default")
+    fun loadDefaults() = configurationService.loadDefaults()
 
 }

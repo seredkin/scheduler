@@ -1,10 +1,14 @@
 package rest.scheduler
 
+import org.apache.commons.codec.digest.DigestUtils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.stream.Collectors
 import javax.inject.Singleton
 import kotlin.streams.toList
+
 
 @Singleton
 class ConfigurationService(
@@ -50,20 +54,43 @@ class ConfigurationService(
                     Times(values[0].toLong(), values[1].toLong(), values[2]).toScheduledTime()
                 }
         timeRepository.clear()
-        timeRepository.addAll(inputData.toList().sortedBy{ it.time }
+        timeRepository.addAll(inputData.toList().sortedBy { it.time }
         )
     }
 
     internal fun loadDefaults() {
-            loadLines(fileAsText("./data/lines.csv"))
-            loadStops(fileAsText("./data/stops.csv"))
-            loadTimes(fileAsText("./data/times.csv"))
-            loadDelays(fileAsText("./data/delays.csv"))
+        loadLines(fileAsText("$dir/$lines", md5s.getValue(lines)))
+        loadStops(fileAsText("$dir/$stops", md5s.getValue(stops)))
+        loadTimes(fileAsText("$dir/$times", md5s.getValue(times)))
+        loadDelays(fileAsText("$dir/$delays", md5s.getValue(delays)))
     }
 
-    private fun fileAsText(stopsFile: String) = Files.lines(Paths.get(stopsFile)).collect(Collectors.joining("\n"))
+    private fun fileAsText(dataFile: String, expectedChecksum:String):String {
+        val text = Files.lines(Paths.get(dataFile)).collect(Collectors.joining("\n"))
+        val fileChecksum = DigestUtils.md5Hex(text)
+        if(fileChecksum != expectedChecksum){
+            log.warn("Checksums do not match for reference data file: $dataFile." +
+                    "Expected $expectedChecksum but was $fileChecksum")
+        }
+        return text
+    }
 
     private fun skipHeaderAndEmptyLines(file: String) = file.lines().stream().skip(1).filter { !it.isBlank() }
 
+    companion object {
+        private const val dir = "./data"
+        private const val lines = "lines.csv"
+        private const val stops = "stops.csv"
+        private const val times = "times.csv"
+        private const val delays = "delays.csv"
+        /** MD5s of the reference dataset */
+        private val md5s = mapOf(
+                Pair(delays, "3b72eaeec8ea2cd98d45ca57fa4946a7"),
+                Pair(lines, "6f07fd3507308cf97f3276479434d152"),
+                Pair(stops, "bef1917bfffb3aad799da4fa4fa4ede9"),
+                Pair(times, "eb76febb0cfb545cdddad72c29b862bf")
+        )
+        private val log: Logger = LoggerFactory.getLogger(ConfigurationService::class.java)
+    }
 
 }
