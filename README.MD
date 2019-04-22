@@ -57,7 +57,7 @@ Call
 ## Postman
 
 
-![Postman Example](postman-screenshot.png "Postman Example")
+![Postman Example](https://github.com/seredkin/scheduler/blob/master/postman-screenshot.png)
 Use postman script to test running container by importing this file to Postman: 
 
 ![scheduler.postman_collection.json]
