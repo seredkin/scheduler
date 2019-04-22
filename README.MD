@@ -57,10 +57,10 @@ Call
 ## Postman
 
 
-!(postman-screenshot.png "Postman Example")
+![Postman Example](postman-screenshot.png "Postman Example")
 Use postman script to test running container by importing this file to Postman: 
 
-`scheduler.postman_collection.json`
+![scheduler.postman_collection.json]
 
 Add your own Postman requests
 
@@ -73,5 +73,5 @@ Open build.gradle in our IDE of choice, set up annotation processing for Microna
 
 By runing all test with coverage, you should get ˜90% line coverage (approximation is given to current inability of IDEA to evaluet Kotlin coverage properly):
 
-!(coverage-screenshot.png "Coverage Sample") 
+![Coverage sample from IDEA](coverage-screenshot.png) 
       
