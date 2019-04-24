@@ -6,7 +6,7 @@ An implementation of basic query API for retrieving data of a public transportat
 
 * Kotlin
 * Gradle
-* Micronaut Framework ![https://micronaut.io/]
+* Micronaut Framework [https://micronaut.io/]
 * JUnit
 * Docker
 * Postman
@@ -32,7 +32,8 @@ An implementation of basic query API for retrieving data of a public transportat
 
 ### Open Issues
 
-* Multi-tenancy support is missing from the design. Would be nice to server multiple cities with the same instance.
+* Multi-tenancy support is missing from the design. Would be nice to serve multiple cities with the same instance.
+* DataSet versioning: we should be able to restore the state of stop graph/timetables/delays at any moment of time in the past.
 * Direction information for lines and times is missing
 * Timing data domain should be specified properly:
     * Arrival/Departure time
